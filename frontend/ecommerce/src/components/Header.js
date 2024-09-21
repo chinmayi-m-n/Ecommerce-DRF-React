@@ -1,8 +1,21 @@
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button, Container } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../actions/userActions';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const userLogin = useSelector(state => state.userLogin);
+  const { userInfo } = userLogin;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutHandler = () => {
+    dispatch(logout());
+    navigate('/');  // Redirect to home page after logout
+  }
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
@@ -13,7 +26,7 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <LinkContainer to="/">
-              <Nav.Link>Home <i class="fa-solid fa-house"></i> </Nav.Link>
+              <Nav.Link>Home <i className="fa-solid fa-house"></i> </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/products">
               <Nav.Link>Products</Nav.Link>
@@ -21,16 +34,20 @@ function Header() {
             <LinkContainer to="/cart">
               <Nav.Link>Cart</Nav.Link>
             </LinkContainer>
-            <NavDropdown title="User" id="basic-nav-dropdown">
-              <LinkContainer to="/login">
-                <NavDropdown.Item>Login</NavDropdown.Item>
-              </LinkContainer>
-              <LinkContainer to="/signup">
-                <NavDropdown.Item>Sign up</NavDropdown.Item>
-              </LinkContainer>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
-            </NavDropdown>
+            {userInfo ? (
+              <NavDropdown title={userInfo.name || "User"} id="user-nav-dropdown">
+                <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <NavDropdown title="Account" id="account-nav-dropdown">
+                <LinkContainer to="/login">
+                  <NavDropdown.Item>Login</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/signup">
+                  <NavDropdown.Item>Sign up</NavDropdown.Item>
+                </LinkContainer>
+              </NavDropdown>
+            )}
           </Nav>
           <Form className="d-flex">
             <FormControl type="search" placeholder="Search" className="me-2" aria-label="Search" />

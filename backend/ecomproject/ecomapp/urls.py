@@ -8,4 +8,7 @@ urlpatterns = [
     path('users/login/', MyTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path('users/profile/<int:pk>', UserDetailView.as_view(), name="user-profile"),
     path('users/', UserListCreateView.as_view(), name="users"),
+    path('users/activate/<uid64>/<token>/', ActivateAccountView.as_view(), name="activate"),
+    path('waiting/', waiting, name="waiting"),
 ]
+
