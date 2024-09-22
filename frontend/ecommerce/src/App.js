@@ -31,7 +31,7 @@ function App() {
       <Route exact path='/signup' element={<SignUpScreen />} />
     </Routes>
     <Routes>
-      <Route exact path='/cart' element={<CartScreen />} />
+      <Route exact path='/cart/:id?' element={<CartScreen />} />
     </Routes>
     <Routes>
       <Route exact path='/products/:id' element={<ProductScreen />} />
