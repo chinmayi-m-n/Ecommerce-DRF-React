@@ -4,7 +4,7 @@ import { Container, Row, Col, Table, Card, Button, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart } from '../../actions/cartAction';
 import placeOrder from '../../actions/orderAction';
-
+import { useNavigate } from 'react-router';
 
 function ShippingScreen() {
     const cartItems = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];
@@ -29,6 +29,8 @@ function ShippingScreen() {
 
     const [message, setMessage] = useState('')
 
+    const [paymentMethod, setPaymentMethod] = useState('');
+
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -49,6 +51,11 @@ function ShippingScreen() {
         }))
       }
 
+    const handlePaymentChange = (e) => {
+        setPaymentMethod(e.target.value);
+    }
+
+    const navigate = useNavigate();
 
     const addressHandler = (e) => {
         e.preventDefault();
@@ -66,9 +73,17 @@ function ShippingScreen() {
         // localStorage.setItem('shippingAddress', JSON.stringify(shippingAddress));
         // localStorage.setItem('orderItems', JSON.stringify(cartItems));
 
-        const order = {"OderItems": cartItems, "ShippingAddress": shippingAddress, "Total": total}
+        const order = {"OrderItems": cartItems, "ShippingAddress": shippingAddress, "Total": total, "PaymentMethod": paymentMethod};
+
+        console.log("order",JSON.stringify(order));
         
         dispatch(placeOrder(order));
+
+        localStorage.removeItem('cartItems');
+        localStorage.removeItem('shippingAddress');
+        localStorage.removeItem('orderItems');
+
+        navigate('/thankyou');
         
     
     }
@@ -186,6 +201,19 @@ function ShippingScreen() {
                             </Form.Group>
                         </Col>
                     </Row>
+                     <Col md={3}>                           
+                     <Form.Group controlId="formPaymentMethod" className="my-3">
+                    <Form.Label>Payment Method</Form.Label>
+                    <Form.Select value={paymentMethod} onChange={handlePaymentChange}>
+                        <option value="">Select Payment Method</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Cash on Delivery">Cash on Delivery</option>
+                    </Form.Select>
+                </Form.Group>
+                        
+                    </Col>
                     <Button variant="primary" type="submit" className="mt-4">
                         Submit
                     </Button>

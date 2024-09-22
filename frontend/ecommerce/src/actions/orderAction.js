@@ -16,7 +16,7 @@ const placeOrder = (order) => async (dispatch, getState) => {
             }
         };
 
-        const { data } = await axios.post('/api/orders/', order, config);
+        const { data } = await axios.post('/api/placeorder/', order, config);
 
         dispatch({
             type: ORDER_SUCCESS,

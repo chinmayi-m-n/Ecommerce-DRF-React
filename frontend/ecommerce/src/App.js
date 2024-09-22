@@ -11,6 +11,7 @@ import CartScreen from './components/screens/CartScreen'
 import TempScreen from './components/screens/TempScreen'
 import Product from './components/Product'
 import ShippingScreen from './components/screens/shippingScreen'
+import ThankyouScreen from './components/screens/thankyouScreen'
 
 
 
@@ -42,6 +43,9 @@ function App() {
     </Routes>
     <Routes>
       <Route exact path='/shipping/' element={<ShippingScreen />} />
+    </Routes>
+    <Routes>
+      <Route exact path='/thankyou/' element={<ThankyouScreen />} />
     </Routes>
     </Router>
 

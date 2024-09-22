@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from .products import products
 from .serializers import ProductSerializer,UserDetailSerializer,MyTokenObtainPairSerializer, UserListSerializer
 from rest_framework.viewsets import generics
-from .models import Product
+from .models import *
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import View
@@ -17,6 +17,7 @@ from .utils import generate_token, TokenGenerator
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
 from django.core.mail import EmailMessage
 from django.conf import settings
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 
 # Create your views here.
@@ -58,7 +59,33 @@ def waiting(request):
     return render(request, 'waiting.html')
 
 
-class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserDetailSerializer
-    lookup_field = 'pk'
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def place_order(request):
+    user = request.user
+    data = request.data
+    orderItems = data['OrderItems']
+    if orderItems and len(orderItems) == 0:
+        return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        # Create Order
+        order = Order.objects.create(
+            user=user,
+            paymentMethod=data['PaymentMethod'],
+            totalPrice=data['Total']
+        )
+        # Create Order Items
+        for i in orderItems:
+            product = Product.objects.get(_id=i['product'])
+            item = OrderItem.objects.create(
+                product=product,
+                order=order,
+                name=product.name,
+                quantity=i['quantity'],
+                price=i['price'],
+                image=product.image.url
+            )
+            # Update Stock
+            product.stockcount -= item.quantity
+            product.save()
+        return Response('Order was placed successfully', status=status.HTTP_201_CREATED)
