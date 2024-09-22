@@ -14,6 +14,11 @@ function ProductScreen() {
   const productDetails = useSelector((state) => state.productDetails);
   const { error, loading, product } = productDetails;
 
+  const userLogin = useSelector(state => state.userLogin);
+  const { userInfo } = userLogin;
+
+
+
   const [quantity, setQuantity] = useState(1);
 
   const navigate = useNavigate();
@@ -88,6 +93,7 @@ function ProductScreen() {
                     </Col>
                   </Row>
                 </ListGroup.Item>
+
                 {product.stockcount > 0 && (
                   <ListGroup.Item>
                     <Row>
@@ -99,7 +105,7 @@ function ProductScreen() {
                           onClick={decreaseQuantity}
                           disabled={quantity === 1}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash" viewBox="0 0 16 16">
                             <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
                           </svg>
                         </Button>
@@ -119,7 +125,7 @@ function ProductScreen() {
                           onClick={increaseQuantity}
                           disabled={quantity === product.stockcount}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                           </svg>
                         </Button>
@@ -128,14 +134,20 @@ function ProductScreen() {
                   </ListGroup.Item>
                 )}
                 <ListGroup.Item>
-                  <Button
-                    className='btn-block btn-success'
-                    disabled={product.stockcount === 0}
-                    type='button'
-                    onClick={addToCartHandler}
-                  >
-                    Add to Cart
-                  </Button>
+                  {userInfo ? (
+                    <Button
+                      className='btn-block btn-success'
+                      disabled={product.stockcount === 0}
+                      type='button'
+                      onClick={addToCartHandler}
+                    >
+                      Add to Cart
+                    </Button>
+                  ) : (
+                    <div className="text-center text-warning">
+                      Please login to start purchasing
+                    </div>
+                  )}
                 </ListGroup.Item>
               </ListGroup>
             </Card>

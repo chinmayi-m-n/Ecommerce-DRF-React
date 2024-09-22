@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ecomapp',
+    'orders',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',

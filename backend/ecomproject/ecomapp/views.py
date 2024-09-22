@@ -56,3 +56,9 @@ class ActivateAccountView(View):
     
 def waiting(request):
     return render(request, 'waiting.html')
+
+
+class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer
+    lookup_field = 'pk'
