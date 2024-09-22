@@ -10,6 +10,7 @@ import ProductScreen from './components/screens/ProductScreen'
 import CartScreen from './components/screens/CartScreen'
 import TempScreen from './components/screens/TempScreen'
 import Product from './components/Product'
+import ShippingScreen from './components/screens/shippingScreen'
 
 
 
@@ -38,6 +39,9 @@ function App() {
     </Routes>
     <Routes>
       <Route exact path='/products/' element={<ProductScreen />} />
+    </Routes>
+    <Routes>
+      <Route exact path='/shipping/' element={<ShippingScreen />} />
     </Routes>
     </Router>
 

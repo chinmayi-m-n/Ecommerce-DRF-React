@@ -29,6 +29,10 @@ function CartScreen({ params }) {
 
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
+  const userLogin = useSelector(state => state.userLogin);
+
+  const { userInfo } = userLogin;
+
   console.log('total', total);
 
   useEffect(() => {
@@ -42,93 +46,117 @@ function CartScreen({ params }) {
   };
 
   const checkoutHandler = () => {
-    navigate('/login?redirect=shipping');
+
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    navigate('/shipping');
   };
 
 
   return (
     <>
-      <Row>
-        <Container>
-          <Col md={8}>
+      <div>
 
-            <h1>Shopping Cart</h1>
-            {cartItems.length === 0 ? (
-              <Message variant="info">
-                Your cart is empty <Link to="/">Go Back</Link>
-              </Message>
-            ) : (
+        {userInfo ? (
 
+        <div>
 
-              <ListGroup variant="flush">
-                {cartItems.map((item) => (
-                  <ListGroup.Item key={item.product}>
-                    <Row>
-                      <Col md={2}>
-                        <img src={item.image} alt={item.name} className="img-fluid rounded" />
-                      </Col>
-                      <Col md={3}>
-                        <Link to={`/products/${item.product}`} as="h3">{item.name}</Link>
-                      </Col>
-                      <Col md={2}>${item.price}</Col>
-                      <Col md={2}>
-                        <Form.Control
-                          as="select"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            dispatch(
-                              addToCart(item.product, Number(e.target.value))
-                            )
-                          }
-                        >
-                          {[...Array(item.stockcount).keys()].map((x) => (
-                            <option key={x + 1} value={x + 1}>
-                              {x + 1}
-                            </option>
-                          ))}
-                        </Form.Control>
-                      </Col>
-                      <Col md={1}>
-                        <Button
-                          type="button"
-                          variant="light"
-                          onClick={() => removeFromCartHandler(item.product)}>
-                          <i className="fas fa-trash"></i>
-                        </Button>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-
-            )}
-
-          </Col>
-        </Container>
-        
-      </Row>
-      <br />
-      <Container>
         <Row>
-          <Col md={3}>
-            <h3>Sumtotal:</h3>
-          </Col>
-          <Col md={3}>
-            <h3>${total}</h3>
-          </Col>
-          <Col md={3}>
-            <Button
-              type="button"
-              className="btn-block"
-              disabled={cartItems.length === 0}
-              onClick={checkoutHandler}
-            >
-              Proceed to Checkout
-            </Button>
-          </Col>
+          <Container>
+            <Col md={8}>
+
+              <h1>Shopping Cart</h1>
+              {cartItems.length === 0 ? (
+                <Message variant="info">
+                  Your cart is empty <Link to="/">Go Back</Link>
+                </Message>
+              ) : (
+
+
+                <ListGroup variant="flush">
+                  {cartItems.map((item) => (
+                    <ListGroup.Item key={item.product}>
+                      <Row>
+                        <Col md={2}>
+                          <img src={item.image} alt={item.name} className="img-fluid rounded" />
+                        </Col>
+                        <Col md={3}>
+                          <Link to={`/products/${item.product}`} as="h3">{item.name}</Link>
+                        </Col>
+                        <Col md={2}>${item.price}</Col>
+                        <Col md={2}>
+                          <Form.Control
+                            as="select"
+                            value={item.quantity}
+                            onChange={(e) =>
+                              dispatch(
+                                addToCart(item.product, Number(e.target.value))
+                              )
+                            }
+                          >
+                            {[...Array(item.stockcount).keys()].map((x) => (
+                              <option key={x + 1} value={x + 1}>
+                                {x + 1}
+                              </option>
+                            ))}
+                          </Form.Control>
+                        </Col>
+                        <Col md={1}>
+                          <Button
+                            type="button"
+                            variant="light"
+                            onClick={() => removeFromCartHandler(item.product)}>
+                            <i className="fas fa-trash"></i>
+                          </Button>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+
+              )}
+
+            </Col>
+          </Container>
+
         </Row>
+        <br />
+        <Container>
+          <Row>
+            <Col md={3}>
+              <h3>Sumtotal:</h3>
+            </Col>
+            <Col md={3}>
+              <h3>${total}</h3>
+            </Col>
+            <Col md={3}>
+              {userInfo ? (
+                <Button
+                  type="button"
+                  className="btn-block"
+                  disabled={cartItems.length === 0}
+                  onClick={checkoutHandler}
+                >
+                  Proceed to Checkout
+                </Button>) : (
+                <div className="text-center text-warning">
+                  Please login to start purchasing
+                </div>
+              )}
+            </Col>
+          </Row>
         </Container>
-      
+        </div>
+        ) : (
+ 
+          <Container className='mt-4'>
+          <Message variant='danger'>Please login to access cart page</Message>
+          <Button variant='primary' onClick={() => navigate('/login')}>Login</Button>
+          </Container>
+        )
+
+        }
+
+      </div>
     </>
   )
 };
