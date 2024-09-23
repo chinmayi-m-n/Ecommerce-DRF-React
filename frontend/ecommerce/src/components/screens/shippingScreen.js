@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Table, Card, Button, Form } from 'react-bootstrap';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, removeFromCart } from '../../actions/cartAction';
+import { addToCart, clearCart, removeFromCart } from '../../actions/cartAction';
 import placeOrder from '../../actions/orderAction';
 import { useNavigate } from 'react-router';
 
@@ -79,9 +79,13 @@ function ShippingScreen() {
         
         dispatch(placeOrder(order));
 
+        dispatch(removeFromCart(cartItems.map(item => item.product.id)));
+
         localStorage.removeItem('cartItems');
         localStorage.removeItem('shippingAddress');
         localStorage.removeItem('orderItems');
+
+        dispatch(clearCart());
 
         navigate('/thankyou');
         

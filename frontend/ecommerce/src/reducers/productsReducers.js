@@ -1,5 +1,6 @@
 import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL } from '../constants/productsConstants'
 import { PRODUCT_DETAIL_REQUEST, PRODUCT_DETAIL_SUCCESS, PRODUCT_DETAIL_FAIL} from '../constants/productsConstants';
+import { PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL } from '../constants/productsConstants';
 
 
 console.log(PRODUCT_LIST_FAIL)
@@ -32,3 +33,16 @@ export const productDetailReducer = (state = { product: [] }, action) => {
     }
 }
 
+
+export const createProductReducer = (state = { product: {} }, action) => {
+    switch(action.type) {
+        case PRODUCT_CREATE_REQUEST:
+            return { loading: true, ...state }
+        case PRODUCT_CREATE_SUCCESS:
+            return { loading: false, product: action.payload }
+        case PRODUCT_CREATE_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}

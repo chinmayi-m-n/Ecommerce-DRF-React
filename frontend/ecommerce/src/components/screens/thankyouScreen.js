@@ -1,12 +1,20 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 function ThankYouScreen({ user }) {
+
+
+  const navigate = useNavigate();
 
   const userLogin = useSelector(state => state.userLogin);
 
   const { userInfo } = userLogin;
+
+  const continueHandler = () => {
+    navigate('/');
+  }
 
   return (
     <Container className="text-center mt-5">
@@ -16,7 +24,7 @@ function ThankYouScreen({ user }) {
           <p className="lead my-4">
             We truly appreciate your support and hope you enjoy your items. If you need any assistance, feel free to reach out!
           </p>
-          <Button variant="primary" href="/#/" className="mt-3">
+          <Button onClick={continueHandler} variant="primary" className="mt-3">
             Continue Shopping
           </Button>
         </Col>

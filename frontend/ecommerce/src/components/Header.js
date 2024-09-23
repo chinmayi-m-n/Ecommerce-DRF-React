@@ -17,6 +17,10 @@ function Header() {
     navigate('/');  // Redirect to home page after logout
   }
 
+  const sellHandler = () => {
+    navigate('/create');
+  }
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
@@ -27,16 +31,19 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <LinkContainer to="/">
-              <Nav.Link>Home <i className="fa-solid fa-house"></i> </Nav.Link>
+              <Nav.Link>Home 
+                {/* <i className="fa-solid fa-house"></i>  home icon */}
+                </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/products">
-              <Nav.Link>Products</Nav.Link>
+              <Nav.Link>Your Products</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/cart">
               <Nav.Link>Cart</Nav.Link>
             </LinkContainer>
             {userInfo ? (
               <NavDropdown title={userInfo.name || "User"} id="user-nav-dropdown">
+                <NavDropdown.Item onClick={sellHandler}>Sell</NavDropdown.Item>
                 <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
               </NavDropdown>
             ) : (

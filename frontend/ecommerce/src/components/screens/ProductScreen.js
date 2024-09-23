@@ -43,6 +43,12 @@ function ProductScreen() {
   const addToCartHandler = () => {
     navigate(`/cart/${id}?quantity=${quantity}`);
   };
+
+
+  const updateHandler = () => {
+    navigate(`/update/${id}`);
+  }
+
   return (
     <Container>
       <Link to='/' className='btn btn-dark my-3'>Go Back</Link>
@@ -135,20 +141,51 @@ function ProductScreen() {
                 )}
                 <ListGroup.Item>
                   {userInfo ? (
-                    <Button
-                      className='btn-block btn-success'
-                      disabled={product.stockcount === 0}
-                      type='button'
-                      onClick={addToCartHandler}
-                    >
-                      Add to Cart
-                    </Button>
+                    userInfo.id === product.user ? (
+
+                      
+                      <div>
+                        <Row>
+                          <Col md={6}>
+                            <Button
+                              className='btn-block btn-success'
+                              disabled={product.stockcount === 0}
+                              type='button'
+                              onClick={addToCartHandler}
+                            >
+                              Add to Cart
+                            </Button>
+                          </Col>
+
+                          <Col md={6}>
+                            <Button className='btn-block btn-success' type='button' onClick={updateHandler}>
+                              Update
+                            </Button>
+                          </Col>
+                        </Row>
+                      </div>
+                    ) : (
+
+                      <div>                        
+                      <Col md={6}>
+                        <Button
+                          className='btn-block btn-success'
+                          disabled={product.stockcount === 0}
+                          type='button'
+                          onClick={addToCartHandler}
+                        >
+                          Add to Cart
+                        </Button>
+                      </Col>
+                      </div>
+                    )
                   ) : (
                     <div className="text-center text-warning">
                       Please login to start purchasing
                     </div>
                   )}
                 </ListGroup.Item>
+
               </ListGroup>
             </Card>
           </Col>

@@ -12,6 +12,10 @@ import TempScreen from './components/screens/TempScreen'
 import Product from './components/Product'
 import ShippingScreen from './components/screens/shippingScreen'
 import ThankyouScreen from './components/screens/thankyouScreen'
+import SellerScreen from './components/screens/sellerScreen'
+import UpdateScreen from './components/screens/updateScreen'
+import CreateScreen from './components/screens/createScreen'
+
 
 
 
@@ -39,13 +43,19 @@ function App() {
       <Route exact path='/products/:id' element={<ProductScreen />} />
     </Routes>
     <Routes>
-      <Route exact path='/products/' element={<ProductScreen />} />
+      <Route exact path='/products/' element={<SellerScreen />} />
     </Routes>
     <Routes>
       <Route exact path='/shipping/' element={<ShippingScreen />} />
     </Routes>
     <Routes>
       <Route exact path='/thankyou/' element={<ThankyouScreen />} />
+    </Routes>
+    <Routes>
+      <Route exact path='/update/:id' element={<UpdateScreen />} />
+    </Routes>
+    <Routes>
+      <Route exact path='/create/' element={<CreateScreen />} />
     </Routes>
     </Router>
 

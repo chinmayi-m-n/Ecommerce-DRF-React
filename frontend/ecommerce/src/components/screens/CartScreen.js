@@ -52,6 +52,14 @@ function CartScreen({ params }) {
   };
 
 
+  useEffect(() => {
+    // Clear cart items after checkout
+    if (cartItems.length === 0) {
+      localStorage.removeItem('cartItems');
+    }
+  }, [cartItems]);
+
+
   return (
     <>
       <div>
