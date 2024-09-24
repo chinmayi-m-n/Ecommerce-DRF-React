@@ -2,9 +2,10 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { listProducts } from '../../actions/productsActions'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col, Button } from 'react-bootstrap'
 import Product from '../Product'
-
+import Message from '../Message'
+import { useNavigate } from 'react-router'
 
 
 function SellerScreen() {
@@ -17,6 +18,8 @@ function SellerScreen() {
     const productList = useSelector((state) => state.productList)
 
     const { error, loading, products } = productList
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         dispatch(listProducts())
@@ -43,12 +46,21 @@ function SellerScreen() {
                      </Row>
                      </Container>
                     ) : (
-                        <h1>No products</h1>
+                        <div className='mt-4'>
+                            <Col md={6} className='mx-auto'>
+                        <Message variant='info'>No products found</Message>
+                        </Col>
+                        </div>
                     )}
                 </div>
             ) : (
                 <div>
-                    <h1>Not Authorized</h1>
+                    <div className='mt-4'>
+                            <Col md={6} className='mx-auto'>
+                        <Message variant='danger'>Please log in to sell products</Message>
+                        <Button variant='primary' onClick={() => navigate('/login')}>Login</Button>
+                        </Col>
+                        </div>
                 </div>
             )}
         </>

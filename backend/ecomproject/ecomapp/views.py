@@ -18,6 +18,8 @@ from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeEr
 from django.core.mail import EmailMessage
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from django.db import transaction
+
 
 
 # Create your views here.
@@ -31,6 +33,11 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_update(self, serializer):
+
+
+        super().perform_update(serializer)
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
@@ -70,24 +77,26 @@ def place_order(request):
     if orderItems and len(orderItems) == 0:
         return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
     else:
+
+        with transaction.atomic():
         # Create Order
-        order = Order.objects.create(
-            user=user,
-            paymentMethod=data['PaymentMethod'],
-            totalPrice=data['Total']
-        )
-        # Create Order Items
-        for i in orderItems:
-            product = Product.objects.get(_id=i['product'])
-            item = OrderItem.objects.create(
-                product=product,
-                order=order,
-                name=product.name,
-                quantity=i['quantity'],
-                price=i['price'],
-                image=product.image.url
+            order = Order.objects.create(
+                user=user,
+                paymentMethod=data['PaymentMethod'],
+                totalPrice=data['Total']
             )
-            # Update Stock
-            product.stockcount -= item.quantity
-            product.save()
+            # Create Order Items
+            for i in orderItems:
+                product = Product.objects.get(_id=i['product'])
+                item = OrderItem.objects.create(
+                    product=product,
+                    order=order,
+                    name=product.name,
+                    quantity=i['quantity'],
+                    price=i['price'],
+                    image=product.image.url
+                )
+                # Update Stock
+                product.stockcount -= item.quantity
+                product.save()
         return Response('Order was placed successfully', status=status.HTTP_201_CREATED)

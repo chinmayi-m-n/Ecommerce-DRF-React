@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Row, Col, Image, ListGroup, Card, Button, Container, Form } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Card, Button, Container, Form, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Rating from '../Rating';
-import { listProductDetails } from '../../actions/productsActions';
+import { listProductDetails, deleteProduct } from '../../actions/productsActions';
 import Loader from '../Loader';
 import Message from '../Message';
 
@@ -23,6 +23,11 @@ function ProductScreen() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
 
   useEffect(() => {
     dispatch(listProductDetails(id));
@@ -47,6 +52,20 @@ function ProductScreen() {
 
   const updateHandler = () => {
     navigate(`/update/${id}`);
+  }
+
+  const confirmationHandler = () => {
+    dispatch(deleteProduct(product._id));
+    navigate('/products/');
+  }
+
+  const deleteHandler = () => {
+    handleShow(); // Show the modal instead of using window.confirm
+  }
+
+  const confirmDeleteHandler = () => {
+    confirmationHandler();
+    handleClose(); // Close the modal after confirming deletion
   }
 
   return (
@@ -143,7 +162,7 @@ function ProductScreen() {
                   {userInfo ? (
                     userInfo.id === product.user ? (
 
-                      
+
                       <div>
                         <Row>
                           <Col md={6}>
@@ -166,17 +185,17 @@ function ProductScreen() {
                       </div>
                     ) : (
 
-                      <div>                        
-                      <Col md={6}>
-                        <Button
-                          className='btn-block btn-success'
-                          disabled={product.stockcount === 0}
-                          type='button'
-                          onClick={addToCartHandler}
-                        >
-                          Add to Cart
-                        </Button>
-                      </Col>
+                      <div>
+                        <Col md={6}>
+                          <Button
+                            className='btn-block btn-success'
+                            disabled={product.stockcount === 0}
+                            type='button'
+                            onClick={addToCartHandler}
+                          >
+                            Add to Cart
+                          </Button>
+                        </Col>
                       </div>
                     )
                   ) : (
@@ -188,6 +207,55 @@ function ProductScreen() {
 
               </ListGroup>
             </Card>
+            <div>
+              {userInfo.id === product.user ? (
+                <div className='mt-3'>
+                  <Col md={6}>
+                    <Button
+                      variant='danger'
+                      className='btn-block btn-failure'
+                      type='button'
+                      onClick={deleteHandler}
+                    >
+                      Delete Product
+                    </Button>
+                  </Col>
+                </div>
+              ) : (
+                userInfo ? (
+                <div className='mt-3'>
+                  <Col md={6}>
+                    <Button
+                      variant='info'
+                      className='btn-block btn-success'
+                      type='button'
+                      onClick={null}
+                    >
+                      Review Product
+                    </Button>
+                  </Col>
+                </div>
+              ): (
+                <div>
+                </div>
+              ))}
+
+              {/* Modal for confirming deletion */}
+              <Modal show={showModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Confirm Deletion</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to delete this product?</Modal.Body>
+                <Modal.Footer>
+                  <Button variant='secondary' onClick={handleClose}>
+                    Cancel
+                  </Button>
+                  <Button variant='danger' onClick={confirmDeleteHandler}>
+                    Delete
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </div>
           </Col>
         </Row>
       )}
